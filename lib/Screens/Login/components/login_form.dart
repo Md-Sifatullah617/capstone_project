@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_auth/Authentication/auth_services.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../Signup/signup_screen.dart';
 
-class LoginForm extends StatelessWidget {
+class LoginForm extends StatefulWidget {
   const LoginForm({
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<LoginForm> createState() => _LoginFormState();
+}
+
+class _LoginFormState extends State<LoginForm> {
+  String emailAddr = '';
+  String pwd = "";
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +26,11 @@ class LoginForm extends StatelessWidget {
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             cursorColor: kPrimaryColor,
-            onSaved: (email) {},
+            onSaved: (email) {
+              setState(() {
+                emailAddr = email!;
+              });
+            },
             decoration: const InputDecoration(
               hintText: "Your email",
               prefixIcon: Padding(
@@ -33,6 +45,11 @@ class LoginForm extends StatelessWidget {
               textInputAction: TextInputAction.done,
               obscureText: true,
               cursorColor: kPrimaryColor,
+              onSaved: (password) {
+                setState(() {
+                  pwd = password!;
+                });
+              },
               decoration: const InputDecoration(
                 hintText: "Your password",
                 prefixIcon: Padding(
@@ -46,7 +63,9 @@ class LoginForm extends StatelessWidget {
           Hero(
             tag: "login_btn",
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                AuthServices.signinUser(emailAddr, pwd);
+              },
               child: Text(
                 "Login".toUpperCase(),
               ),

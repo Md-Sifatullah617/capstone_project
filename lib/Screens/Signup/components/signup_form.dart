@@ -1,79 +1,81 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_auth/Authentication/auth_services.dart';
 
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../Login/login_screen.dart';
 
-class SignUpForm extends StatelessWidget {
+class SignUpForm extends StatefulWidget {
   const SignUpForm({
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<SignUpForm> createState() => _SignUpFormState();
+}
+
+class _SignUpFormState extends State<SignUpForm> {
+  String fullName = "";
+
+  String phoneNumber = "";
+
+  String emailAddress = "";
+
+  String password = "";
 
   @override
   Widget build(BuildContext context) {
     return Form(
       child: Column(
         children: [
-          TextFormField(
-            keyboardType: TextInputType.emailAddress,
-            textInputAction: TextInputAction.next,
-            cursorColor: kPrimaryColor,
-            onSaved: (fullname) {},
-            decoration: const InputDecoration(
-              hintText: "Full Name",
-              prefixIcon: Padding(
-                padding: EdgeInsets.all(defaultPadding),
-                child: Icon(Icons.person),
-              ),
-            ),
-          ),
+          CustomTextField(
+              hText: "Full Name",
+              textinputaction: TextInputAction.next,
+              iconss: const Icon(Icons.person),
+              onsaved: (fName) {
+                setState(() {
+                  fullName = fName!;
+                });
+              }),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: defaultPadding),
-            child: TextFormField(
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.next,
-              cursorColor: kPrimaryColor,
-              onSaved: (pNumber) {},
-              decoration: const InputDecoration(
-                hintText: "Phone Number",
-                prefixIcon: Padding(
-                  padding: EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.phone),
-                ),
-              ),
-            ),
+            child: CustomTextField(
+                hText: "Phone Number",
+                textinputaction: TextInputAction.next,
+                iconss: const Icon(Icons.phone),
+                onsaved: (nPhone) {
+                  setState(() {
+                    phoneNumber = nPhone!;
+                  });
+                }),
           ),
-          TextFormField(
-            keyboardType: TextInputType.emailAddress,
-            textInputAction: TextInputAction.next,
-            cursorColor: kPrimaryColor,
-            onSaved: (email) {},
-            decoration: const InputDecoration(
-              hintText: "Your email",
-              prefixIcon: Padding(
-                padding: EdgeInsets.all(defaultPadding),
-                child: Icon(Icons.email),
-              ),
-            ),
-          ),
+          CustomTextField(
+              hText: "Email Address",
+              textinputaction: TextInputAction.next,
+              iconss: const Icon(Icons.email),
+              onsaved: (email) {
+                setState(() {
+                  emailAddress = email!;
+                });
+              }),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: defaultPadding),
-            child: TextFormField(
-              textInputAction: TextInputAction.done,
-              obscureText: true,
-              cursorColor: kPrimaryColor,
-              decoration: const InputDecoration(
-                hintText: "Your password",
-                prefixIcon: Padding(
-                  padding: EdgeInsets.all(defaultPadding),
-                  child: Icon(Icons.lock),
-                ),
-              ),
-            ),
+            child: CustomTextField(
+                hText: "Your Password",
+                obscuretext: true,
+                textinputaction: TextInputAction.done,
+                iconss: const Icon(Icons.lock),
+                onsaved: (pwd) {
+                  setState(() {
+                    password = pwd!;
+                  });
+                }),
           ),
           const SizedBox(height: defaultPadding / 2),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              AuthServices.signupUser(fullName,phoneNumber,emailAddress,password);
+            },
             child: Text("Sign Up".toUpperCase()),
           ),
           const SizedBox(height: defaultPadding),
@@ -91,6 +93,42 @@ class SignUpForm extends StatelessWidget {
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+class CustomTextField extends StatelessWidget {
+  const CustomTextField({
+    Key? key,
+    required this.hText,
+    required this.iconss,
+    required this.onsaved,
+    this.keyboadType,
+    this.obscuretext,
+    this.textinputaction,
+  }) : super(key: key);
+  final String hText;
+  final Icon iconss;
+  final Function(String?)? onsaved;
+  final TextInputType? keyboadType;
+  final bool? obscuretext;
+  final TextInputAction? textinputaction;
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      keyboardType: keyboadType ?? TextInputType.none,
+      obscureText: obscuretext ?? false,
+      textInputAction: textinputaction ?? TextInputAction.next,
+      cursorColor: kPrimaryColor,
+      onSaved: onsaved,
+      decoration: InputDecoration(
+        hintText: hText,
+        prefixIcon: Padding(
+          padding: const EdgeInsets.all(defaultPadding),
+          child: iconss,
+        ),
       ),
     );
   }
