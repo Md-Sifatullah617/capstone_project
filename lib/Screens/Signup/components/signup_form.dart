@@ -23,6 +23,12 @@ class _SignUpFormState extends State<SignUpForm> {
 
   String password = "";
 
+  onSubmitted() async {
+    print("$fullName $phoneNumber $emailAddress $password");
+    await AuthServices.signupUser(
+        fullName, phoneNumber, emailAddress, password);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -34,7 +40,7 @@ class _SignUpFormState extends State<SignUpForm> {
               iconss: const Icon(Icons.person),
               onsaved: (fName) {
                 setState(() {
-                  fullName = fName!;
+                  fullName = fName;
                 });
               }),
           Padding(
@@ -45,7 +51,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 iconss: const Icon(Icons.phone),
                 onsaved: (nPhone) {
                   setState(() {
-                    phoneNumber = nPhone!;
+                    phoneNumber = nPhone;
                   });
                 }),
           ),
@@ -55,7 +61,7 @@ class _SignUpFormState extends State<SignUpForm> {
               iconss: const Icon(Icons.email),
               onsaved: (email) {
                 setState(() {
-                  emailAddress = email!;
+                  emailAddress = email;
                 });
               }),
           Padding(
@@ -67,14 +73,14 @@ class _SignUpFormState extends State<SignUpForm> {
                 iconss: const Icon(Icons.lock),
                 onsaved: (pwd) {
                   setState(() {
-                    password = pwd!;
+                    password = pwd;
                   });
                 }),
           ),
           const SizedBox(height: defaultPadding / 2),
           ElevatedButton(
             onPressed: () {
-              AuthServices.signupUser(fullName,phoneNumber,emailAddress,password);
+              onSubmitted();
             },
             child: Text("Sign Up".toUpperCase()),
           ),
@@ -110,7 +116,7 @@ class CustomTextField extends StatelessWidget {
   }) : super(key: key);
   final String hText;
   final Icon iconss;
-  final Function(String?)? onsaved;
+  final Function(String)? onsaved;
   final TextInputType? keyboadType;
   final bool? obscuretext;
   final TextInputAction? textinputaction;
@@ -122,7 +128,7 @@ class CustomTextField extends StatelessWidget {
       obscureText: obscuretext ?? false,
       textInputAction: textinputaction ?? TextInputAction.next,
       cursorColor: kPrimaryColor,
-      onSaved: onsaved,
+      onChanged: onsaved,
       decoration: InputDecoration(
         hintText: hText,
         prefixIcon: Padding(

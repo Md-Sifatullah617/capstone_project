@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/Authentication/auth_services.dart';
+import 'package:flutter_auth/Screens/Dashboard/dashboard.dart';
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../Signup/signup_screen.dart';
@@ -14,8 +15,26 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
+  bool isLoading = false;
   String emailAddr = '';
   String pwd = "";
+
+  onSubmitted() async {
+    setState(() {
+      isLoading = true;
+      print("email: $emailAddr, password: $pwd");
+    });
+    isLoading ? CircularProgressIndicator() : null;
+    await AuthServices.signinUser(emailAddr, pwd).then((value) {
+      if (value != null) {
+        setState(() {
+          isLoading = false;
+        });
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const UserDashboard()));
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +45,9 @@ class _LoginFormState extends State<LoginForm> {
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
             cursorColor: kPrimaryColor,
-            onSaved: (email) {
+            onChanged: (value) {
               setState(() {
-                emailAddr = email!;
+                emailAddr = value;
               });
             },
             decoration: const InputDecoration(
@@ -45,9 +64,9 @@ class _LoginFormState extends State<LoginForm> {
               textInputAction: TextInputAction.done,
               obscureText: true,
               cursorColor: kPrimaryColor,
-              onSaved: (password) {
+              onChanged: (value) {
                 setState(() {
-                  pwd = password!;
+                  pwd = value;
                 });
               },
               decoration: const InputDecoration(
@@ -64,7 +83,7 @@ class _LoginFormState extends State<LoginForm> {
             tag: "login_btn",
             child: ElevatedButton(
               onPressed: () {
-                AuthServices.signinUser(emailAddr, pwd);
+                onSubmitted();
               },
               child: Text(
                 "Login".toUpperCase(),

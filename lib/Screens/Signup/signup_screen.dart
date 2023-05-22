@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/constants.dart';
 import 'package:flutter_auth/responsive.dart';
 import '../../components/background.dart';
 import 'components/sign_up_top_image.dart';
@@ -11,25 +10,23 @@ class SignUpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Background(
+    return const Background(
       child: SingleChildScrollView(
         child: Responsive(
-          mobile: const MobileSignupScreen(),
+          mobile: MobileSignupScreen(),
           desktop: Row(
             children: [
-              const Expanded(
+              Expanded(
                 child: SignUpScreenTopImage(),
               ),
               Expanded(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     SizedBox(
                       width: 450,
                       child: SignUpForm(),
                     ),
-                    SizedBox(height: defaultPadding / 2),
-                    SocalSignUp()
                   ],
                 ),
               )
@@ -48,12 +45,12 @@ class MobileSignupScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        const SignUpScreenTopImage(),
+        SignUpScreenTopImage(),
         Row(
-          children: const [
+          children: [
             Spacer(),
             Expanded(
               flex: 8,
@@ -62,7 +59,7 @@ class MobileSignupScreen extends StatelessWidget {
             Spacer(),
           ],
         ),
-        const SocalSignUp()
+        SocalSignUp()
       ],
     );
   }
