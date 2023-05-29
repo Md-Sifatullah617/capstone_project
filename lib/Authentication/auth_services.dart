@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthServices {
-  static signupUser(
-      String name, String phone, String email, String password) async {
+  signupUser(String name, String phone, String email, String password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -23,11 +23,11 @@ class AuthServices {
     }
   }
 
-  static signinUser(String email, String password) async {
+  signinUser(String email, String password) async {
     try {
       final UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-          return userCredential;
+      return userCredential;
     } on FirebaseAuthException catch (error) {
       if (error.code == "user-not-found") {
         print("No user found with this email.");

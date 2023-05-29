@@ -25,7 +25,7 @@ class _LoginFormState extends State<LoginForm> {
       print("email: $emailAddr, password: $pwd");
     });
     isLoading ? CircularProgressIndicator() : null;
-    await AuthServices.signinUser(emailAddr, pwd).then((value) {
+    await AuthServices().signinUser(emailAddr, pwd).then((value) {
       if (value != null) {
         setState(() {
           isLoading = false;

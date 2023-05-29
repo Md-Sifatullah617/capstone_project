@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_auth/Authentication/auth_services.dart';
 import 'or_divider.dart';
 import 'social_icon.dart';
 
@@ -19,13 +20,11 @@ class SocalSignUp extends StatelessWidget {
               iconSrc: "assets/icons/facebook.svg",
               press: () {},
             ),
-            // SocalIcon(
-            //   iconSrc: "assets/icons/twitter.svg",
-            //   press: () {},
-            // ),
             SocalIcon(
               iconSrc: "assets/icons/google-plus.svg",
-              press: () {},
+              press: () {
+                print("Google button pressed");
+              },
             ),
           ],
         ),
