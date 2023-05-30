@@ -25,8 +25,8 @@ class _SignUpFormState extends State<SignUpForm> {
 
   onSubmitted() async {
     print("$fullName $phoneNumber $emailAddress $password");
-    await AuthServices().signupUser(
-        fullName, phoneNumber, emailAddress, password);
+    await AuthServices()
+        .signupUser(fullName, phoneNumber, emailAddress, password, context);
   }
 
   @override

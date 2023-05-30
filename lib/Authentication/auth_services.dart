@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthServices {
-  signupUser(String name, String phone, String email, String password) async {
+  static signupUser(
+      String name, String phone, String email, String password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -12,30 +12,51 @@ class AuthServices {
       await FirestoreServices.saveUserdata(
           name, email, userCredential.user!.uid);
       print("Registration Successfull");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Registration Successfull"),
+      ));
     } on FirebaseAuthException catch (error) {
       if (error.code == "weak-password") {
         print("Password provided is too weak");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Password provided is too weak"),
+        ));
       } else if (error.code == "email-already-in-use") {
         print("Email provided is already exist");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Email provided is already exist"),
+        ));
       }
     } catch (e) {
       print(e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(e.toString()),
+      ));
     }
   }
 
-  signinUser(String email, String password) async {
+  static signinUser(String email, String password) async {
     try {
       final UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-      return userCredential;
+          return userCredential;
     } on FirebaseAuthException catch (error) {
       if (error.code == "user-not-found") {
         print("No user found with this email.");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("No user found with this email."),
+        ));
       } else if (error.code == "wrong-password") {
         print("Password didn't match");
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Password didn't match"),
+        ));
       }
     } catch (e) {
       print(e.toString());
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(e.toString()),
+      ));
       return null;
     }
   }
