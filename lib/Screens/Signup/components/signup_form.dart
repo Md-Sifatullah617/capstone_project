@@ -22,11 +22,12 @@ class _SignUpFormState extends State<SignUpForm> {
   String emailAddress = "";
 
   String password = "";
+  String? role;
 
   onSubmitted() async {
-    print("$fullName $phoneNumber $emailAddress $password");
-    await AuthServices()
-        .signupUser(fullName, phoneNumber, emailAddress, password, context);
+    print("$fullName $phoneNumber $emailAddress $password $role");
+    await AuthServices().signupUser(fullName, phoneNumber, emailAddress,
+        password, role.toString(), context);
   }
 
   @override
@@ -77,7 +78,33 @@ class _SignUpFormState extends State<SignUpForm> {
                   });
                 }),
           ),
-          const SizedBox(height: defaultPadding / 2),
+          //create a dropdown field for role
+          DropdownButtonFormField(
+            decoration: const InputDecoration(
+              hintText: "Select Role",
+              prefixIcon: Padding(
+                padding: EdgeInsets.all(defaultPadding),
+                child: Icon(Icons.person),
+              ),
+            ),
+            value: role,
+            onChanged: (value) {
+              setState(() {
+                role = value.toString();
+              });
+            },
+            items: const [
+              DropdownMenuItem(
+                value: "NGO",
+                child: Text("NGO"),
+              ),
+              DropdownMenuItem(
+                value: "Donor",
+                child: Text("Donor"),
+              ),
+            ],
+          ),
+          const SizedBox(height: defaultPadding*2),
           ElevatedButton(
             onPressed: () {
               onSubmitted();

@@ -59,7 +59,6 @@ class MobileSignupScreen extends StatelessWidget {
             Spacer(),
           ],
         ),
-        SocalSignUp()
       ],
     );
   }

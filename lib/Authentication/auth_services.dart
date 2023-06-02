@@ -3,15 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AuthServices {
-   signupUser(
-      String name, String phone, String email, String password, context) async {
+  signupUser(String name, String phone, String email, String password,
+      String role, context) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
       await FirebaseAuth.instance.currentUser!.updateDisplayName(name);
       await FirebaseAuth.instance.currentUser!.updateEmail(email);
       await FirestoreServices.saveUserdata(
-          name, email, userCredential.user!.uid);
+          name, email, phone, role, userCredential.user!.uid);
       print("Registration Successfull");
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Registration Successfull"),
@@ -36,11 +36,11 @@ class AuthServices {
     }
   }
 
-   signinUser(String email, String password, context) async {
+  signinUser(String email, String password, context) async {
     try {
       final UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
-          return userCredential;
+      return userCredential;
     } on FirebaseAuthException catch (error) {
       if (error.code == "user-not-found") {
         print("No user found with this email.");
@@ -64,10 +64,10 @@ class AuthServices {
 }
 
 class FirestoreServices {
-  static saveUserdata(String name, email, uid) async {
+  static saveUserdata(String name, email, phone, role, uid) async {
     await FirebaseFirestore.instance
         .collection("users")
         .doc(uid)
-        .set({"email": email, "name": name});
+        .set({"email": email, "name": name, "phone": phone, "role": role});
   }
 }
