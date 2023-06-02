@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_auth/Authentication/auth_services.dart';
 import 'or_divider.dart';
 import 'social_icon.dart';
 
