@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
           if (snapshot.hasData) {
-            return const UserDashboard();
+            return UserDashboard();
           } else {
             return const WelcomeScreen();
           }

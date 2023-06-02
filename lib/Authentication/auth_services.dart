@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
 class AuthServices {
-  static signupUser(
-      String name, String phone, String email, String password) async {
+   signupUser(
+      String name, String phone, String email, String password, context) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
@@ -35,7 +36,7 @@ class AuthServices {
     }
   }
 
-  static signinUser(String email, String password) async {
+   signinUser(String email, String password, context) async {
     try {
       final UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
