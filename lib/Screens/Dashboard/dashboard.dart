@@ -5,39 +5,32 @@ import 'package:flutter_auth/components/navbar.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/dom.dart' as dom;
 
-class UserDashboard extends StatefulWidget {
-  final List<Widget>? navItem;
+class UserDashboard extends StatelessWidget {
+   UserDashboard({Key? key}) : super(key: key);
 
-  const UserDashboard({Key? key, this.navItem}) : super(key: key);
-
-  @override
-  State<UserDashboard> createState() => _UserDashboardState();
-}
-
-class _UserDashboardState extends State<UserDashboard> {
   final List<Widget> navItem = [
     TextButton(
         onPressed: () {},
         child: const Text(
-          "About",
+          "Home",
           style: TextStyle(color: Colors.black),
         )),
     TextButton(
         onPressed: () {},
         child: const Text(
-          "Products",
+          "Profile",
           style: TextStyle(color: Colors.black),
         )),
     TextButton(
         onPressed: () {},
         child: const Text(
-          "Features",
+          "Request Medicine",
           style: TextStyle(color: Colors.black),
         )),
     TextButton(
         onPressed: () {},
         child: const Text(
-          "Contact",
+          "Sent Medicine",
           style: TextStyle(color: Colors.black),
         )),
   ];
@@ -45,16 +38,10 @@ class _UserDashboardState extends State<UserDashboard> {
   //list of icon for each navItem
   final List<Icon> navIcon = [
     const Icon(Icons.home),
-    const Icon(Icons.shopping_cart),
-    const Icon(Icons.featured_play_list),
-    const Icon(Icons.contact_mail),
+    const Icon(Icons.account_circle),
+    const Icon(Icons.medical_services),
+    const Icon(Icons.medical_services_outlined),
   ];
-
-  @override
-  void initState() {
-    getWebsiteData();
-    super.initState();
-  }
 
   Future getWebsiteData() async {
     final url = Uri.parse("https://medex.com.bd/generics");
@@ -88,7 +75,7 @@ class _UserDashboardState extends State<UserDashboard> {
             ),
             //show the navItem list with a different prefix icon for each item
             ...navItem.map((e) => ListTile(
-                  contentPadding: const EdgeInsets.only(right: 150, left: 20),
+                  contentPadding: const EdgeInsets.only(right: 100, left: 20),
                   title: e,
                   leading: navIcon[navItem.indexOf(e)],
                 )),

@@ -46,7 +46,7 @@ class NavBar extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                ...?const UserDashboard().navItem,
+                ...UserDashboard().navItem,
                 const SizedBox(
                   width: 20,
                 ),
