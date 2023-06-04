@@ -2,9 +2,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/Screens/Login/login_screen.dart';
 import 'package:flutter_auth/components/navbar.dart';
+import 'package:http/http.dart' as http;
+import 'package:html/dom.dart' as dom;
 
-class UserDashboard extends StatelessWidget {
+class UserDashboard extends StatefulWidget {
   UserDashboard({Key? key}) : super(key: key);
+
+  @override
+  State<UserDashboard> createState() => _UserDashboardState();
+}
+
+class _UserDashboardState extends State<UserDashboard> {
   final List<Widget> navItem = [
     TextButton(
         onPressed: () {},
@@ -31,6 +39,7 @@ class UserDashboard extends StatelessWidget {
           style: TextStyle(color: Colors.black),
         )),
   ];
+
   //list of icon for each navItem
   final List<Icon> navIcon = [
     const Icon(Icons.home),
@@ -38,6 +47,21 @@ class UserDashboard extends StatelessWidget {
     const Icon(Icons.featured_play_list),
     const Icon(Icons.contact_mail),
   ];
+
+@override
+  void initState() {
+    getWebsiteData();
+    super.initState();
+  }
+  Future 
+ getWebsiteData() async {
+    final url = Uri.parse("https://medex.com.bd/generics");
+    final response = await http.get(url);
+    dom.Document html = dom.Document.html(response.body);
+
+    final titles = html.querySelectorAll("#ms-block > section > div > div:nth-child(2) > div:nth-child(1) > a:nth-child(1) > div").map((elements) => elements.innerHtml.trim()).toList();
+    
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

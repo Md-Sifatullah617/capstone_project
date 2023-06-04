@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/Screens/Login/login_screen.dart';
 import 'package:flutter_auth/responsive.dart';
-
 import '../Screens/Dashboard/dashboard.dart';
 
 class NavBar extends StatelessWidget {
@@ -47,7 +46,7 @@ class NavBar extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                ...UserDashboard().navItem,
+                ...navItem,
                 const SizedBox(
                   width: 20,
                 ),
