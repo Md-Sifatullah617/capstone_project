@@ -6,7 +6,9 @@ import 'package:http/http.dart' as http;
 import 'package:html/dom.dart' as dom;
 
 class UserDashboard extends StatefulWidget {
-  UserDashboard({Key? key}) : super(key: key);
+  final List<Widget>? navItem;
+
+  const UserDashboard({Key? key, this.navItem}) : super(key: key);
 
   @override
   State<UserDashboard> createState() => _UserDashboardState();
@@ -48,20 +50,24 @@ class _UserDashboardState extends State<UserDashboard> {
     const Icon(Icons.contact_mail),
   ];
 
-@override
+  @override
   void initState() {
     getWebsiteData();
     super.initState();
   }
-  Future 
- getWebsiteData() async {
+
+  Future getWebsiteData() async {
     final url = Uri.parse("https://medex.com.bd/generics");
     final response = await http.get(url);
     dom.Document html = dom.Document.html(response.body);
 
-    final titles = html.querySelectorAll("#ms-block > section > div > div:nth-child(2) > div:nth-child(1) > a:nth-child(1) > div").map((elements) => elements.innerHtml.trim()).toList();
-    
+    final titles = html
+        .querySelectorAll(
+            "#ms-block > section > div > div:nth-child(2) > div:nth-child(1) > a:nth-child(1) > div")
+        .map((elements) => elements.innerHtml.trim())
+        .toList();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
