@@ -1,46 +1,141 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_auth/Screens/Dashboard/dashboard.dart';
 import 'package:flutter_auth/Screens/Login/login_screen.dart';
 import 'package:flutter_auth/responsive.dart';
 
-class NavBar extends StatelessWidget {
+import '../Screens/Dashboard/profile.dart';
+import '../Screens/Dashboard/request_med.dart';
+
+class NavBar extends StatefulWidget {
   NavBar({Key? key}) : super(key: key);
+
+  @override
+  State<NavBar> createState() => _NavBarState();
+}
+
+class _NavBarState extends State<NavBar> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  //list off user data
+  List<String> userData = [];
 
-  final List<Widget> navItem = [
-    TextButton(
-        onPressed: () {},
-        child: const Text(
-          "Home",
-          style: TextStyle(color: Colors.black),
-        )),
-    TextButton(
-        onPressed: () {},
-        child: const Text(
-          "Profile",
-          style: TextStyle(color: Colors.black),
-        )),
-    TextButton(
-        onPressed: () {},
-        child: const Text(
-          "Request Medicine",
-          style: TextStyle(color: Colors.black),
-        )),
-    TextButton(
-        onPressed: () {},
-        child: const Text(
-          "Sent Medicine",
-          style: TextStyle(color: Colors.black),
-        )),
-  ];
+  List<Widget> navItem = [];
+  List<Icon> navIcon = [];
 
-  //list of icon for each navItem
-  final List<Icon> navIcon = [
-    const Icon(Icons.home),
-    const Icon(Icons.account_circle),
-    const Icon(Icons.medical_services),
-    const Icon(Icons.medical_services_outlined),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    fetchUserData();
+  }
+
+  Future<void> fetchUserData() async {
+    String? userId = FirebaseAuth.instance.currentUser?.uid;
+
+    if (userId != null) {
+      DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+          .instance
+          .collection('users')
+          .doc(userId)
+          .get();
+
+      String? type = snapshot.data()?['userTypes'];
+      //name and email and phone
+      String? name = snapshot.data()?['name'];
+      String? email = snapshot.data()?['email'];
+      String? phone = snapshot.data()?['phone'];
+      userData.add(name!);
+      userData.add(email!);
+      userData.add(phone!);
+
+      if (type != null) {
+        setState(() {
+          print("User type: $type");
+          print("User data: $userData");
+          initializeNavItems(
+              type); // Call the function to initialize navItem list
+        });
+      }
+    }
+  }
+
+  void initializeNavItems(String userType) {
+    navItem = [
+      Builder(
+        builder: (context) => TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: ((context) => UserDashboard())),
+            );
+          },
+          child: const Text(
+            "Home",
+            style: TextStyle(color: Colors.black),
+          ),
+        ),
+      ),
+      Builder(
+        builder: (context) => TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: ((context) => ProfileSection(
+                        userData: userData,
+                      ))),
+            );
+          },
+          child: const Text(
+            "Profile",
+            style: TextStyle(color: Colors.black),
+          ),
+        ),
+      ),
+      Builder(
+        builder: (context) => Visibility(
+          visible: userType == 'NGO', // Show only for NGO user
+          child: TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: ((context) => const RequestMed())),
+              );
+            },
+            child: const Text(
+              "Request Medicine",
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+        ),
+      ),
+      Builder(
+        builder: (context) => Visibility(
+          visible: userType == 'Donor', // Show only for DONOR user
+          child: TextButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: ((context) => UserDashboard())),
+              );
+            },
+            child: const Text(
+              "Sent Medicine",
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+        ),
+      ),
+    ];
+
+    navIcon = [
+      const Icon(Icons.home),
+      const Icon(Icons.account_circle),
+      const Icon(Icons.medical_services),
+      const Icon(Icons.medical_services_outlined),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

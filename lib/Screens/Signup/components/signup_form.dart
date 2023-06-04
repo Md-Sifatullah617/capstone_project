@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/Authentication/auth_services.dart';
-
 import '../../../components/already_have_an_account_acheck.dart';
 import '../../../constants.dart';
 import '../../Login/login_screen.dart';
@@ -16,17 +15,17 @@ class SignUpForm extends StatefulWidget {
 
 class _SignUpFormState extends State<SignUpForm> {
   String fullName = "";
-
   String phoneNumber = "";
-
   String emailAddress = "";
-
+  String userTypes = "";
   String password = "";
 
   onSubmitted() async {
-    print("$fullName $phoneNumber $emailAddress $password");
-    await AuthServices()
-        .signupUser(fullName, phoneNumber, emailAddress, password, context);
+    print("$fullName $phoneNumber $emailAddress $password $userTypes");
+    await AuthServices().signupUser(
+        fullName, phoneNumber, emailAddress, password, context, userTypes);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => LoginScreen()));
   }
 
   @override
@@ -64,6 +63,26 @@ class _SignUpFormState extends State<SignUpForm> {
                   emailAddress = email;
                 });
               }),
+          const SizedBox(height: defaultPadding),
+          //dropdownformfield for select user type
+          DropdownButtonFormField(
+              decoration: const InputDecoration(
+                hintText: "Select User Type",
+                prefixIcon: Padding(
+                  padding: EdgeInsets.all(defaultPadding),
+                  child: Icon(Icons.person),
+                ),
+              ),
+              items: const [
+                DropdownMenuItem(value: "NGO", child: Text("NGO")),
+                DropdownMenuItem(value: "Donor", child: Text("DONOR")),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  userTypes = value.toString();
+                });
+              }),
+
           Padding(
             padding: const EdgeInsets.symmetric(vertical: defaultPadding),
             child: CustomTextField(
