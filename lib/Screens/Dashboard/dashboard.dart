@@ -43,12 +43,80 @@ class _UserDashboardState extends State<UserDashboard> {
         NavBar(),
         Container(
           margin: const EdgeInsets.only(top: 100),
-          child: const Center(
-            child: Text(
-              "Welcome to Med_X",
-              style: TextStyle(fontSize: 30),
-            ),
-          ),
+          child: Column(
+            children: [
+                Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: const Text(
+                    "Welcome to Medex",
+                    style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                    ),
+                    ),
+                ),
+                Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: const Text(
+                    "Your one stop solution for all your medical needs",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                    ),
+                    ),
+                ),
+                Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: const Text(
+                    "We are here to help you",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                    ),
+                    ),
+                ),
+                Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: const Text(
+                    "We are here to help you",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                    ),
+                    ),
+                ),
+                Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: const Text(
+                    "We are here to help you",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                    ),
+                    ),
+                ),
+                Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: const Text(
+                    "We are here to help you",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                    ),
+                    ),
+                ),
+                Container(
+                    margin: const EdgeInsets.only(top: 20),
+                    child: const Text(
+                    "We are here to help you",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                    ),
+                    ),
+                ),
+            ],
+          )
         )
       ]),
     );

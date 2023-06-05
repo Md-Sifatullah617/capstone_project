@@ -7,6 +7,7 @@ import 'package:flutter_auth/responsive.dart';
 
 import '../Screens/Dashboard/profile.dart';
 import '../Screens/Dashboard/request_med.dart';
+import '../Screens/Dashboard/sent_med.dart';
 
 class NavBar extends StatefulWidget {
   NavBar({Key? key}) : super(key: key);
@@ -116,7 +117,7 @@ class _NavBarState extends State<NavBar> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: ((context) => UserDashboard())),
+                MaterialPageRoute(builder: ((context) => const SendMedicine())),
               );
             },
             child: const Text(

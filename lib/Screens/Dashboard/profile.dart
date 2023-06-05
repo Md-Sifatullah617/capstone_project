@@ -77,7 +77,7 @@ class _ProfileSectionState extends State<ProfileSection> {
                             radius: 120,
                             backgroundImage: _selectedImage ??
                                 const AssetImage(
-                                  "assets/images/profile.jpg",
+                                  "assets/images/profile1.png",
                                 ),
                           ),
                         ),

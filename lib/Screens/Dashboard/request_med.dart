@@ -74,12 +74,7 @@ class RequestMed extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            const TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Medicine Image',
-              ),
-            ),
+            
             const SizedBox(
               height: 20,
             ),
