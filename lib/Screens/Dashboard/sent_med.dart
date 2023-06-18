@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/components/background.dart';
 import 'package:flutter_auth/components/navbar.dart';
@@ -44,21 +45,24 @@ class _SendMedicineState extends State<SendMedicine> {
   }
 
   Widget buildImagePreview() {
-    if (pickedImage != null) {
-      return Image.file(
+  if (pickedImage != null) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
+      child: Image.file(
         pickedImage!,
-        width: 200,
-        height: 200,
+        width: double.infinity,
+        height: double.infinity,
         fit: BoxFit.cover,
-      );
-    } else {
-      return const Icon(
-        Icons.image_outlined,
-        size: 80,
-        color: Colors.grey,
-      );
-    }
+      ),
+    );
+  } else {
+    return const Icon(
+      Icons.image_outlined,
+      size: 80,
+      color: Colors.grey,
+    );
   }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -159,7 +163,7 @@ class _SendMedicineState extends State<SendMedicine> {
                                         vertical: defaultPadding),
                                     child: GestureDetector(
                                       onTap: () {
-                                        if (Platform.isWindows) {
+                                        if (kIsWeb || Platform.isWindows) {
                                           pickFile();
                                         } else {
                                           pickImage();
