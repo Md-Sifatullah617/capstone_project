@@ -40,6 +40,9 @@ class AuthServices {
     try {
       final UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Login Successfull"),
+      ));
       return userCredential;
     } on FirebaseAuthException catch (error) {
       if (error.code == "user-not-found") {
@@ -69,8 +72,9 @@ class FirestoreServices {
     await FirebaseFirestore.instance.collection("users").doc(uid).set(
         {"email": email, "name": name, "phone": phone, "userTypes": userTypes});
   }
-  
-  static Future<DocumentSnapshot<Map<String, dynamic>>> getUserData(String uid) async {
+
+  static Future<DocumentSnapshot<Map<String, dynamic>>> getUserData(
+      String uid) async {
     return FirebaseFirestore.instance.collection("users").doc(uid).get();
   }
 }
