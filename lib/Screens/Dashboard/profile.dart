@@ -1,9 +1,6 @@
 import 'dart:typed_data';
-import 'dart:html' as html;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/components/navbar.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ProfileSection extends StatefulWidget {
   final List<String> userData;
@@ -14,34 +11,8 @@ class ProfileSection extends StatefulWidget {
 }
 
 class _ProfileSectionState extends State<ProfileSection> {
-  ImagePicker _imagePicker = ImagePicker();
   Uint8List? _selectedImageBytes;
   ImageProvider? _selectedImage;
-
-  Future<void> _selectProfilePicture() async {
-    final pickedImage =
-        await _imagePicker.pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      final html.File imageFile = html.File(
-        [await pickedImage.readAsBytes()],
-        pickedImage.path,
-      );
-
-      final reader = html.FileReader();
-      reader.readAsDataUrl(imageFile);
-      reader.onLoadEnd.listen((event) {
-        if (reader.result != null) {
-          setState(() {
-            _selectedImageBytes = reader.result as Uint8List?;
-            _selectedImage = Image.memory(
-              _selectedImageBytes!,
-              fit: BoxFit.cover,
-            ).image;
-          });
-        }
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +28,6 @@ class _ProfileSectionState extends State<ProfileSection> {
               children: [
                 Center(
                   child: GestureDetector(
-                    onTap: _selectProfilePicture,
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -108,7 +78,8 @@ class _ProfileSectionState extends State<ProfileSection> {
                 Text(
                   widget.userData[0],
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 50, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
                   height: 18,
@@ -116,7 +87,8 @@ class _ProfileSectionState extends State<ProfileSection> {
                 Text(
                   widget.userData[1],
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
                   height: 18,
@@ -124,7 +96,8 @@ class _ProfileSectionState extends State<ProfileSection> {
                 Text(
                   widget.userData[2],
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(
                   height: 18,

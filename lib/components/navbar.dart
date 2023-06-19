@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/Screens/Dashboard/dashboard.dart';
+import 'package:flutter_auth/Screens/Dashboard/notification_abc.dart';
 import 'package:flutter_auth/Screens/Login/login_screen.dart';
 import 'package:flutter_auth/responsive.dart';
-
 import '../Screens/Dashboard/profile.dart';
 import '../Screens/Dashboard/request_med.dart';
 import '../Screens/Dashboard/sent_med.dart';
@@ -18,11 +18,10 @@ class NavBar extends StatefulWidget {
 
 class _NavBarState extends State<NavBar> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  //list off user data
   List<String> userData = [];
-
   List<Widget> navItem = [];
   List<Icon> navIcon = [];
+  String userType = "";
 
   @override
   void initState() {
@@ -31,31 +30,28 @@ class _NavBarState extends State<NavBar> {
   }
 
   Future<void> fetchUserData() async {
-    String? userId = FirebaseAuth.instance.currentUser?.uid;
-
+    final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId != null) {
-      DocumentSnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
-          .instance
+      final snapshot = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
           .get();
 
-      String? type = snapshot.data()?['userTypes'];
-      //name and email and phone
-      String? name = snapshot.data()?['name'];
-      String? email = snapshot.data()?['email'];
-      String? phone = snapshot.data()?['phone'];
-      userData.add(name!);
-      userData.add(email!);
-      userData.add(phone!);
+      final userDataMap = snapshot.data() as Map<String, dynamic>?;
 
-      if (type != null) {
-        setState(() {
-          print("User type: $type");
-          print("User data: $userData");
-          initializeNavItems(
-              type); // Call the function to initialize navItem list
-        });
+      if (userDataMap != null) {
+        final type = userDataMap['userTypes'] as String?;
+        final name = userDataMap['name'] as String?;
+        final email = userDataMap['email'] as String?;
+        final phone = userDataMap['phone'] as String?;
+
+        if (type != null && name != null && email != null && phone != null) {
+          setState(() {
+            userType = type;
+            userData.addAll([name, email, phone]);
+            initializeNavItems(type);
+          });
+        }
       }
     }
   }
@@ -67,7 +63,7 @@ class _NavBarState extends State<NavBar> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: ((context) => UserDashboard())),
+              MaterialPageRoute(builder: (context) => UserDashboard()),
             );
           },
           child: const Text(
@@ -82,9 +78,8 @@ class _NavBarState extends State<NavBar> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: ((context) => ProfileSection(
-                        userData: userData,
-                      ))),
+                builder: (context) => ProfileSection(userData: userData),
+              ),
             );
           },
           child: const Text(
@@ -93,14 +88,13 @@ class _NavBarState extends State<NavBar> {
           ),
         ),
       ),
-      Builder(
-        builder: (context) => Visibility(
-          visible: userType == 'NGO', // Show only for NGO user
-          child: TextButton(
+      if (userType == 'NGO')
+        Builder(
+          builder: (context) => TextButton(
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: ((context) => const RequestMed())),
+                MaterialPageRoute(builder: (context) => const RequestMed()),
               );
             },
             child: const Text(
@@ -109,15 +103,13 @@ class _NavBarState extends State<NavBar> {
             ),
           ),
         ),
-      ),
-      Builder(
-        builder: (context) => Visibility(
-          visible: userType == 'Donor', // Show only for DONOR user
-          child: TextButton(
+      if (userType == 'Donor')
+        Builder(
+          builder: (context) => TextButton(
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: ((context) => const SendMedicine())),
+                MaterialPageRoute(builder: (context) => const SendMedicine()),
               );
             },
             child: const Text(
@@ -126,14 +118,30 @@ class _NavBarState extends State<NavBar> {
             ),
           ),
         ),
+      Builder(
+        builder: (context) => TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const Notifications()),
+            );
+          },
+          child: const Text(
+            "Notification",
+            style: TextStyle(color: Colors.black),
+          ),
+        ),
       ),
     ];
 
     navIcon = [
       const Icon(Icons.home),
       const Icon(Icons.account_circle),
-      const Icon(Icons.medical_services),
-      const Icon(Icons.medical_services_outlined),
+      if (userType == 'NGO')
+        const Icon(Icons.medical_services)
+      else
+        const Icon(Icons.medical_services_outlined),
+      const Icon(Icons.notifications),
     ];
   }
 
@@ -156,27 +164,30 @@ class _NavBarState extends State<NavBar> {
                 ),
               ),
             ),
-            //show the navItem list with a different prefix icon for each item
-            ...navItem.map((e) => ListTile(
-                  contentPadding: const EdgeInsets.only(right: 100, left: 20),
-                  title: e,
-                  leading: navIcon[navItem.indexOf(e)],
-                )),
+            ...navItem.map(
+              (e) => ListTile(
+                contentPadding: const EdgeInsets.only(right: 100, left: 20),
+                title: e,
+                leading: navIcon[navItem.indexOf(e)],
+              ),
+            ),
             const SizedBox(
               height: 100,
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: InkWell(
-                  onTap: () async {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginScreen()),
-                        (route) => false);
-                    await FirebaseAuth.instance.signOut();
-                  },
-                  child: btnNice()),
+                onTap: () async {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LoginScreen()),
+                    (route) => false,
+                  );
+                  await FirebaseAuth.instance.signOut();
+                },
+                child: btnNice(),
+              ),
             )
           ],
         ),
@@ -194,27 +205,32 @@ class _NavBarState extends State<NavBar> {
                     width: 40,
                     height: 40,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(18),
-                        gradient: const LinearGradient(
-                            colors: [
-                              Color(0xFFC86DD7),
-                              Color(0xFF3023AE),
-                            ],
-                            begin: Alignment.bottomRight,
-                            end: Alignment.topLeft)),
+                      borderRadius: BorderRadius.circular(18),
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFC86DD7), Color(0xFF3023AE)],
+                        begin: Alignment.bottomRight,
+                        end: Alignment.topLeft,
+                      ),
+                    ),
                     child: const Center(
-                      child: Text("M",
-                          style: TextStyle(
-                              fontSize: 30,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold)),
+                      child: Text(
+                        "M",
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(
                   width: 10,
                 ),
-                const Text("Med_X", style: TextStyle(fontSize: 26))
+                const Text(
+                  "Med_X",
+                  style: TextStyle(fontSize: 26),
+                )
               ],
             ),
             if (!Responsive.isMobile(context))
@@ -226,23 +242,26 @@ class _NavBarState extends State<NavBar> {
                     width: 20,
                   ),
                   InkWell(
-                      onTap: () async {
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginScreen()),
-                            (route) => false);
-                        await FirebaseAuth.instance.signOut();
-                      },
-                      child: btnNice())
+                    onTap: () async {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()),
+                        (route) => false,
+                      );
+                      await FirebaseAuth.instance.signOut();
+                    },
+                    child: btnNice(),
+                  )
                 ],
               )
             else
               IconButton(
-                  onPressed: () {
-                    _scaffoldKey.currentState?.openDrawer();
-                  },
-                  icon: const Icon(Icons.menu, color: Colors.black)),
+                onPressed: () {
+                  _scaffoldKey.currentState?.openDrawer();
+                },
+                icon: const Icon(Icons.menu, color: Colors.black),
+              ),
           ],
         ),
       ),
@@ -254,26 +273,31 @@ class _NavBarState extends State<NavBar> {
       width: 120,
       height: 40,
       decoration: BoxDecoration(
-          gradient: const LinearGradient(
-              colors: [Color(0xFFC86DD7), Color(0xFF3023AE)],
-              begin: Alignment.bottomRight,
-              end: Alignment.topLeft),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-                color: const Color(0xFF6078ea).withOpacity(.3),
-                offset: const Offset(0, 8),
-                blurRadius: 8)
-          ]),
-      child: const Material(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFC86DD7), Color(0xFF3023AE)],
+          begin: Alignment.bottomRight,
+          end: Alignment.topLeft,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF6078ea).withOpacity(.3),
+            offset: const Offset(0, 8),
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: Material(
         color: Colors.transparent,
         child: Center(
-          child: Text("LogOut",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                letterSpacing: 1,
-              )),
+          child: Text(
+            "LogOut",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              letterSpacing: 1,
+            ),
+          ),
         ),
       ),
     );
