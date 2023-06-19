@@ -21,10 +21,10 @@ class Notifications extends StatelessWidget {
                       .snapshots(),
                   builder: (context, snapshot) {
                     if (snapshot.hasError) {
-                      return Center(child: Text("Connection Error"));
+                      return const Center(child: Text("Connection Error"));
                     }
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     }
                     if (snapshot.hasData) {
                       var docList = snapshot.data!.docs;
@@ -43,59 +43,7 @@ class Notifications extends StatelessWidget {
                               itemCount: firstHalf.length,
                               itemBuilder: (context, index) {
                                 var doc = firstHalf[index];
-                                return Container(
-                                  constraints: BoxConstraints(
-                                    minHeight: 200,
-                                  ),
-                                  child: Card(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            doc["name"] ?? "No Name",
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(height: 8),
-                                          Text(
-                                            doc["description"] ??
-                                                "No Description",
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(height: 8),
-                                          Text(
-                                            doc["quantity"] ?? "No Quantity",
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(height: 8),
-                                          Text(
-                                            doc["pickUpLocation"] ??
-                                                "No Pickup Location",
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          // Show images of the medicine stored in Firebase Storage
-                                          Image.network(
-                                            doc["images"] ??
-                                                "", // Replace "imageUrl" with the actual field name storing the image URL in Firestore
-                                            height: 100,
-                                            width: 100,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
+                                return MedicineCard(doc: doc);
                               },
                             ),
                           ),
@@ -105,59 +53,7 @@ class Notifications extends StatelessWidget {
                               itemCount: secondHalf.length,
                               itemBuilder: (context, index) {
                                 var doc = secondHalf[index];
-                                return Container(
-                                  constraints: BoxConstraints(
-                                    minHeight: 200,
-                                  ),
-                                  child: Card(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            doc["name"] ?? "No Name",
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(height: 8),
-                                          Text(
-                                            doc["description"] ??
-                                                "No Description",
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(height: 8),
-                                          Text(
-                                            doc["quantity"] ?? "No Quantity",
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(height: 8),
-                                          Text(
-                                            doc["pickUpLocation"] ??
-                                                "No Pickup Location",
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          // Show images of the medicine stored in Firebase Storage
-                                          Image.network(
-                                            doc["imageUrl"] ??
-                                                "", // Replace "imageUrl" with the actual field name storing the image URL in Firestore
-                                            height: 100,
-                                            width: 100,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
+                                return MedicineCard(doc: doc);
                               },
                             ),
                           ),
@@ -173,6 +69,79 @@ class Notifications extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class MedicineCard extends StatelessWidget {
+  final QueryDocumentSnapshot<Object?> doc;
+
+  const MedicineCard({Key? key, required this.doc}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: const BoxConstraints(
+        minHeight: 200,
+      ),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              //create a container or button with the status of the medicine
+              Container(
+                margin: const EdgeInsets.only(bottom: 8),
+                width: 80,
+                height: 30,
+                decoration: BoxDecoration(
+                  color: Colors.green,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Center(
+                  child: Text(
+                    doc["status"] ?? "No Status",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+
+              Text(
+                doc["name"] ?? "No Name",
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                doc["description"] ?? "No Description",
+                style: const TextStyle(
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                doc["quantity"] ?? "No Quantity",
+                style: const TextStyle(
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                doc["pickUpLocation"] ?? "No Pickup Location",
+                style: const TextStyle(
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+              // Show images of the medicine stored
+            ],
+          ),
+        ),
       ),
     );
   }
