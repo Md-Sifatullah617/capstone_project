@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/components/navbar.dart';
@@ -42,8 +44,20 @@ class Notifications extends StatelessWidget {
                               shrinkWrap: true,
                               itemCount: firstHalf.length,
                               itemBuilder: (context, index) {
-                                var doc = firstHalf[index];
-                                return MedicineCard(doc: doc);
+                                var doc = firstHalf[index]
+                                    as QueryDocumentSnapshot<
+                                        Map<String, dynamic>>;
+                                if (isStatusSent(doc)) {
+                                  var base64Images =
+                                      List<String>.from(doc["images"] ?? []);
+                                  return MedicineCard(
+                                    doc: doc,
+                                    base64Images: base64Images,
+                                  );
+                                }
+                                return MedicineCard(
+                                  doc: doc,
+                                );
                               },
                             ),
                           ),
@@ -52,8 +66,20 @@ class Notifications extends StatelessWidget {
                               shrinkWrap: true,
                               itemCount: secondHalf.length,
                               itemBuilder: (context, index) {
-                                var doc = secondHalf[index];
-                                return MedicineCard(doc: doc);
+                                var doc = secondHalf[index]
+                                    as QueryDocumentSnapshot<
+                                        Map<String, dynamic>>;
+                                if (isStatusSent(doc)) {
+                                  var base64Images =
+                                      List<String>.from(doc["images"] ?? []);
+                                  return MedicineCard(
+                                    doc: doc,
+                                    base64Images: base64Images,
+                                  );
+                                }
+                                return MedicineCard(
+                                  doc: doc,
+                                );
                               },
                             ),
                           ),
@@ -72,12 +98,20 @@ class Notifications extends StatelessWidget {
       ),
     );
   }
+
+  bool isStatusSent(QueryDocumentSnapshot<Map<String, dynamic>> doc) {
+    return doc.data().containsKey("status") && doc.data()["status"] == "sent";
+  }
 }
 
 class MedicineCard extends StatelessWidget {
-  final QueryDocumentSnapshot<Object?> doc;
+  final QueryDocumentSnapshot<Map<String, dynamic>> doc;
+  final List<String>? base64Images;
 
-  const MedicineCard({Key? key, required this.doc}) : super(key: key);
+  MedicineCard({Key? key, required this.doc, this.base64Images})
+      : super(key: key);
+
+  bool get hasImages => base64Images != null && base64Images!.isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +125,6 @@ class MedicineCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              //create a container or button with the status of the medicine
               Container(
                 margin: const EdgeInsets.only(bottom: 8),
                 width: 80,
@@ -102,7 +135,7 @@ class MedicineCard extends StatelessWidget {
                 ),
                 child: Center(
                   child: Text(
-                    doc["status"] ?? "No Status",
+                    doc.data()["status"] ?? "No Status",
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
@@ -110,35 +143,61 @@ class MedicineCard extends StatelessWidget {
                   ),
                 ),
               ),
-
               Text(
-                doc["name"] ?? "No Name",
+                doc.data()["name"] ?? "No Name",
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
-                doc["description"] ?? "No Description",
+                doc.data()["description"] ?? "No Description",
                 style: const TextStyle(
                   fontWeight: FontWeight.normal,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
-                doc["quantity"] ?? "No Quantity",
+                doc.data()["quantity"] ?? "No Quantity",
                 style: const TextStyle(
                   fontWeight: FontWeight.normal,
                 ),
               ),
               const SizedBox(height: 8),
               Text(
-                doc["pickUpLocation"] ?? "No Pickup Location",
+                doc.data()["pickUpLocation"] ?? "No Pickup Location",
                 style: const TextStyle(
                   fontWeight: FontWeight.normal,
                 ),
               ),
-              // Show images of the medicine stored
+              if (hasImages)
+                SizedBox(
+                  height: 100,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: base64Images!.length,
+                    itemBuilder: (context, index) {
+                      var base64Image = base64Images![index];
+                      final bytes = base64Decode(base64Image);
+                      return Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: MemoryImage(bytes),
+                            fit: BoxFit.cover,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              if (!hasImages)
+                const Text(
+                  "No Images",
+                  style: TextStyle(fontWeight: FontWeight.normal),
+                ),
             ],
           ),
         ),
