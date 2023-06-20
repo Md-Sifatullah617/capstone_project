@@ -93,7 +93,7 @@ class FirestoreServices {
           FirebaseFirestore.instance.collection("submittedMedicineData");
 
       // Generate a new document ID
-      DocumentReference documentRef = collection.doc(uid);
+      DocumentReference documentRef = collection.doc();
 
       Map<String, dynamic> data = {
         "name": name,

@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_auth/Screens/Dashboard/searchbar.dart';
 import 'package:flutter_auth/components/navbar.dart';
 
 class UserDashboard extends StatefulWidget {
@@ -11,6 +12,7 @@ class UserDashboard extends StatefulWidget {
 }
 
 class _UserDashboardState extends State<UserDashboard> {
+  final TextEditingController _searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,6 +26,14 @@ class _UserDashboardState extends State<UserDashboard> {
                 children: [
                   //show a banner image with carousel slider
                   _buildCarouselSlider(),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  SearchBarWidget(
+                    hintText: '',
+                    onSearchChanged: (String value) {},
+                    textController: _searchController,
+                  ),
                   SizedBox(
                     height: 20,
                   ),

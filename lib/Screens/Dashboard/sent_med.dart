@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_auth/Authentication/auth_services.dart';
-import 'package:flutter_auth/Screens/Dashboard/dashboard.dart';
+import 'package:flutter_auth/Screens/Dashboard/notification_abc.dart';
 import 'package:flutter_auth/components/background.dart';
 import 'package:flutter_auth/components/navbar.dart';
 import 'package:flutter_auth/constants.dart';
@@ -43,6 +43,7 @@ class _SendMedicineState extends State<SendMedicine> {
       images,
       status,
     );
+    print("med Image: $images");
     //show a dialog box to show that the medicine has been sent
     showDialog(
       context: context,
@@ -55,7 +56,7 @@ class _SendMedicineState extends State<SendMedicine> {
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => UserDashboard()));
+                    MaterialPageRoute(builder: (context) => Notifications()));
               },
               child: const Text("OK"),
             ),
